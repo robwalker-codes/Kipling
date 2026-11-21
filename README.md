@@ -1,53 +1,57 @@
-# KIPLING Signals Lab
+# Signals Lab · KL-43C workbench
 
-Operate two independent terminals, exchange messages across a virtual radio net and print the received traffic on a narrow roll. A third headquarters station features in the date-mismatch exercise. The simulator is a behavioural reconstruction grounded in the supplied historical evidence. Its equipment layout, radio timings and cryptography are modern interpretations.
+Two independently operated TRW KL-43C reconstructions share a simulated simplex link. The photographed 59-key faceplates and two-line displays replace the earlier KIPLING design. The operating baseline is TRW manual 410-308-1, Revision F, 15 August 1991.
 
-## Run locally
+**Start with the manuals.** The app opens on the equipment. Select **Quick start** for a complete exchange, or **Operating manual** for two searchable guides. Print this guide prints the whole selected manual, including chapters outside the current view.
 
-Use Node.js 24 LTS and npm. From the repository root:
+- [Device operator’s guide](docs/DEVICE_MANUAL.md) — power, keys, editing, encryption, communications, clock, authentication, printing and recovery.
+- [Emulator user guide](docs/EMULATOR_MANUAL.md) — browser controls, link, faults, keyboard mapping, simulated time and state retention.
+- [First exchange quick reference](docs/OPERATOR_GUIDE.md).
+
+![Two KL-43C terminals on the workbench](docs/screenshots/desktop.png)
+
+## Run the application
+
+Install Node.js 24 LTS, which includes npm. Open a terminal in the folder containing package.json and run:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the Vite address in a browser. Use localhost or HTTPS for Web Crypto. The application runs entirely in the browser. Its fonts, styles and runtime assets are bundled locally.
+Open the local URL printed by Vite. On Windows, use Windows Terminal or Command Prompt. If PowerShell blocks npm.ps1, run npm.cmd ci and npm.cmd run dev. For a port conflict, run npm run dev -- --port 5174. If tsc, vite or Node type declarations are missing, run npm ci --include=dev in the repository folder. Keep package-lock.json in place.
 
-Select **Exercises → First exchange → Load exercise**. Press ALPHA's SEND key, look for ACKNOWLEDGED, then press READ at BRAVO and inspect its paper. For a blank draft use Free operation. Instructor includes a cold start, clock controls, diagnostic trace, fault injection, station setup and session import/export.
+## Build and deploy
 
-## Build and validate
+```sh
+npm run build
+npm run preview
+```
+
+Copy **the contents of dist/**, including index.html and assets/, to an ordinary static web server. Relative asset paths support hosting under a subdirectory, for example /exhibits/kl43/. The deployed application needs a browser and static files. All runtime fonts, icons, manuals and code are local assets.
+
+The build also refreshes KIPLING.html at the repository root, a single-file distribution retaining the existing filename. Serve it from a static web server or localhost. The test suite serves the built application with a plain Node HTTP server at both the root and a nested path. Browser file-scheme behaviour is outside the verified configuration.
+
+## Validation
 
 ```sh
 npm run typecheck
 npm run lint
 npm test
+npm run coverage
 npm run build
-npm run preview
 npx playwright install chromium
 npm run e2e
 ```
 
-Publish the contents of dist/ to a static web host. Playwright starts or reuses the local development server on port 5173. On a machine with a system Chromium installation, set CHROMIUM_PATH to its executable and skip the browser download. To test WebKit on a supported machine, install it with Playwright and run npm run e2e -- --browser=webkit with CHROMIUM_PATH unset.
+To reuse system Chromium, set CHROMIUM_PATH to its executable. In PowerShell, for example, set $env:CHROMIUM_PATH to the installed executable path before running npm run e2e. To regenerate the screenshots, also set CAPTURE to 1. Browser tests reserve localhost port 5184 and use the production build. Versions are fixed by the lockfile. Tests use virtual time and local inputs. Coverage fails below 95% statements or branches across the domain modules.
 
-## Implemented features
+## Implementation and evidence
 
-- Real encrypted DATA and ACK frames, receiver-local authentication, immutable send snapshots, correlated retries and duplicate suppression.
-- A single virtual clock, half-duplex carriers, channel occupancy, deterministic collisions, seeded loss and explicit frame corruption.
-- Eight guided exercises plus free operation, optional third station, independent clock and active epoch, and configurable local power and attachments.
-- Keyboard, mobile input and onscreen editing. Enter inserts a line break. Ctrl+Enter or Command+Enter sends.
-- Bounded stores, progressive printer spooling, paper replacement, jam repair, feed, tear-off, archived slips, selected-slip printing and original-body text export.
-- Local session persistence and validated import/export. Reload and import restore records without loaded keys or radio replay.
+- [Device specification and printed/PDF page concordance](docs/KL43C_SPEC.md)
+- [Evidence, conflicts and reconstruction assumptions](docs/ASSUMPTIONS.md)
+- [Substitute cryptography and printable format](docs/CRYPTO_SIMULATION.md)
+- [Verification and manual coverage](docs/MANUAL_COVERAGE.md) · [machine-readable requirement map](docs/manual-coverage.json)
+- [Narrow-screen layout](docs/screenshots/mobile.png)
 
-## Validation and limits
-
-The Vitest suite exercises the domain with virtual time and the real Web Crypto adapter. Playwright covers Chromium desktop input, two-station delivery, ACK, printing and reload, a 390-pixel HQ failure/repair flow, and cold-start attachment recovery. Desktop and mobile layouts and print rendering were inspected in Chromium. WebKit's browser binary download was denied by the environment's network policy. Mobile testing used a narrow Chromium viewport.
-
-Each tab is an independent simulator. Backgrounding the page freezes virtual time. The evidence baseline contains no authenticated original firmware, complete interface manual or original cipher specification. This local teaching application uses synthetic keys and has no radio hardware interface.
-
-## Documentation
-
-- [Operator guide](docs/OPERATOR_GUIDE.md)
-- [Historical evidence](docs/HISTORICAL_EVIDENCE.md) and [machine-readable claim register](src/evidence.json)
-- [Reconstruction assumptions](docs/RECONSTRUCTION_ASSUMPTIONS.md)
-- [Architecture and lifecycle](docs/ARCHITECTURE.md)
-- [Simulation protocol](docs/SIMULATION_PROTOCOL.md)
+The training provider uses real DES-CFB8 with a self-contained printable envelope. The receiver uses its own key to decrypt. The original cipher, validity check, update procedure, authentication algorithm and wire protocol are unknown. This release serves a historical teaching purpose. Protect real information with current, supported systems.

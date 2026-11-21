@@ -1,0 +1,25 @@
+[
+  { "mode": "power", "pdf": 8, "rows": ["Confirm--Turn power on? (Y/N)", ""] },
+  {
+    "mode": "menu",
+    "pdf": 12,
+    "rows": [
+      "W - WORD PROCESSOR        ↑ or ↓ or",
+      "Q - QUIET OPERATION       Select Function"
+    ]
+  },
+  {
+    "mode": "classification",
+    "pdf": 15,
+    "rows": ["Enter Classification:", "▏"]
+  },
+  { "mode": "search", "pdf": 17, "rows": ["Search String:", "▏"] },
+  { "mode": "working", "pdf": 22, "rows": ["Encrypting", ""] },
+  { "mode": "working", "pdf": 24, "rows": ["Decrypting", ""] },
+  { "mode": "waiting", "pdf": 38, "rows": ["Waiting for Carrier...", ""] },
+  { "mode": "waiting", "pdf": 41, "rows": ["Waiting for Data...", ""] },
+  { "mode": "receiving", "pdf": 35, "rows": ["Receiving Message", ""] },
+  { "mode": "sending", "pdf": 30, "rows": ["Transmitting Message", ""] },
+  { "mode": "auth", "pdf": 44, "rows": ["(C) Challenge or (R) Reply ?", ""] },
+  { "mode": "fault", "pdf": 55, "rows": ["MALFUNCTION! DO NOT USE", ""] }
+]

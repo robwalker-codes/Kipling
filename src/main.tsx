@@ -1,669 +1,729 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { createRoot } from "react-dom/client";
 import {
   Activity,
+  ArrowRight,
   AudioLines,
   BookOpen,
-  ChevronRight,
+  Cable,
+  ChevronDown,
   Clock3,
-  FlaskConical,
-  History,
-  Layers2,
-  Monitor,
+  KeyRound,
+  PanelTop,
   Pause,
   Play,
-  RadioTower,
-  Settings2,
+  Printer,
+  Radio,
   SkipForward,
-  SquareTerminal,
+  SlidersHorizontal,
   Volume2,
   VolumeX,
+  X,
 } from "lucide-react";
-import "@fontsource/barlow-condensed/latin-600.css";
-import "@fontsource/barlow-condensed/latin-700.css";
-import "@fontsource/ibm-plex-mono/latin-400.css";
-import "@fontsource/ibm-plex-mono/latin-600.css";
 import "@fontsource/dm-sans/latin-400.css";
 import "@fontsource/dm-sans/latin-600.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-600.css";
 import "./style.css";
-import { Simulation, scenarios } from "./engine";
-import { profile, utc } from "./profile";
-import { restore, serialize } from "./storage";
-import { Modal, Setup, download } from "./Controls";
-import { Terminal } from "./Terminal";
-import evidence from "./evidence.json";
-const storageKey = "kipling-field-session-v1";
-function initial() {
-  try {
-    const text = localStorage.getItem(storageKey);
-    return {
-      sim: text ? restore(text) : new Simulation(),
-      error: "",
-      persist: localStorage.getItem(storageKey + "-disabled") !== "1",
-    };
-  } catch {
-    return {
-      sim: new Simulation(),
-      error: "Saved session unavailable or malformed. A fresh session is open.",
-      persist: false,
-    };
+import { Bench, impairments, type Noise } from "./kl/bench";
+import { Device, type Port } from "./kl/device";
+import { training } from "./kl/provider";
+import { Manual } from "./Manual";
+const rows = [
+  ["BOT", "EOT", "↓", "↑", "<", ">", "BOL", "EOL", "D CH", "D WD", "SRCH"],
+  [..."1234567890()"],
+  [..."QWERTYUIOP-", "ENTER"],
+  ["ZRO", ..."ASDFGHJKL/", "XIT"],
+  ["CLK", ..."ZXCVBNM,.?", "SPC"],
+];
+const mappings: Record<string, string> = {
+  Enter: "ENTER",
+  Escape: "XIT",
+  Backspace: "D CH",
+  Delete: "D WD",
+  " ": "SPC",
+  ArrowUp: "↑",
+  ArrowDown: "↓",
+  ArrowLeft: "<",
+  ArrowRight: ">",
+  Home: "BOL",
+  End: "EOL",
+};
+const createBench = () =>
+  new Bench((n) => crypto.getRandomValues(new Uint8Array(n)));
+function routeOptions() {
+  return (
+    <>
+      <option value="connector">Connector audio</option>
+      <option value="digital">Digital</option>
+      <option value="printer">Printer</option>
+      <option value="disconnected">Disconnected</option>
+    </>
+  );
+}
+function Face({
+  d,
+  id,
+  refresh,
+  press,
+  port,
+}: {
+  d: Device;
+  id: number;
+  refresh: () => void;
+  press: (d: Device, k: string) => void;
+  port: (p: Port) => void;
+}) {
+  const heldUp = useRef(false),
+    hold = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelHold = () => {
+    if (hold.current) clearTimeout(hold.current);
+    hold.current = null;
+  };
+  useEffect(() => cancelHold, []);
+  const run = (key: string) =>
+    press(d, key === "SRCH" && heldUp.current ? "↑+SRCH" : key);
+  function keydown(e: KeyboardEvent) {
+    if (e.altKey || e.metaKey) return;
+    if (e.ctrlKey && !["Home", "End"].includes(e.key)) return;
+    if (
+      (e.key === "Enter" || e.key === " ") &&
+      e.target instanceof HTMLButtonElement
+    )
+      return;
+    const key = e.ctrlKey
+      ? e.key === "Home"
+        ? "BOT"
+        : "EOT"
+      : (mappings[e.key] ??
+        (/^[a-z0-9(),.\-/?]$/i.test(e.key) ? e.key.toUpperCase() : ""));
+    if (!key) return;
+    e.preventDefault();
+    if (key === "↑") heldUp.current = true;
+    if (e.repeat && ["ENTER", "XIT"].includes(key)) return;
+    if (key === "XIT" && d.mode === "fault")
+      hold.current = setTimeout(() => run("HOLD XIT"), 2000);
+    run(key);
   }
+  const display = d.display();
+  const position =
+    d.mode === "edit" && !d.clockView ? d.editor.position() : null;
+  const cursorRow = position ? Math.min(1, position.line) : -1;
+  return (
+    <article className="station" aria-label={"Terminal " + id}>
+      <div className="stationHead">
+        <h2>
+          <span className="terminalIcon">
+            <PanelTop />
+          </span>
+          Terminal {id}
+        </h2>
+        <span className={"state " + (d.mode !== "off" ? "powered" : "")}>
+          <i />
+          {d.mode === "off"
+            ? "Powered off"
+            : d.mode === "fault"
+              ? "Malfunction"
+              : "Powered on"}
+        </span>
+      </div>
+      <div className="deviceSurface">
+        <div
+          className="case"
+          tabIndex={0}
+          role="group"
+          aria-label={"Terminal " + id + " keyboard"}
+          onKeyDown={keydown}
+          onKeyUp={(e) => {
+            if (e.key === "ArrowUp") heldUp.current = false;
+            if (e.key === "Escape") cancelHold();
+          }}
+          onBlur={() => {
+            heldUp.current = false;
+            cancelHold();
+          }}
+          onPaste={(e) => {
+            if (d.mode === "edit") {
+              e.preventDefault();
+              d.paste(e.clipboardData.getData("text"));
+              refresh();
+            }
+          }}
+        >
+          <div className="window">
+            <div
+              className={"glass " + (d.mode === "off" ? "sleep" : "")}
+              style={{ color: "hsl(70 24% " + (42 - 3 * d.contrast) + "%)" }}
+              role="status"
+              aria-label={"Terminal " + id + " LCD"}
+            >
+              {display.map((line, i) => (
+                <div key={i}>
+                  {position && cursorRow === i ? (
+                    <>
+                      {line.slice(0, Math.min(39, position.col))}
+                      <u>{line[Math.min(39, position.col)]}</u>
+                      {line.slice(Math.min(39, position.col) + 1)}
+                    </>
+                  ) : (
+                    line
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <span className="maker">TRW</span>
+          <div className="keyMatrix">
+            {rows.map((row, i) => (
+              <div key={i} className={"keyRow row" + i}>
+                {row.map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    tabIndex={0}
+                    aria-label={k}
+                    className={"cap " + (k === "ENTER" ? "enter" : "")}
+                    onPointerDown={(e) => {
+                      if (k === "↑") heldUp.current = true;
+                      if (k === "XIT" && d.mode === "fault")
+                        hold.current = setTimeout(() => run("HOLD XIT"), 2000);
+                      if (e.pointerType === "mouse") e.preventDefault();
+                    }}
+                    onPointerUp={() => {
+                      if (k === "↑") heldUp.current = false;
+                      cancelHold();
+                    }}
+                    onPointerCancel={cancelHold}
+                    onClick={(e) => {
+                      if (e.detail > 0)
+                        e.currentTarget
+                          .closest<HTMLElement>(".case")
+                          ?.focus({ preventScroll: true });
+                      run(k);
+                    }}
+                  >
+                    {k === "0" ? "Ø" : k}
+                  </button>
+                ))}
+                {i === 0 && <span className="onmark">ON</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="portline">
+        <Cable />
+        <label>
+          Port{" "}
+          <select
+            aria-label={"Terminal " + id + " port"}
+            value={d.port}
+            onChange={(e) => {
+              port(e.target.value as Port);
+              refresh();
+            }}
+          >
+            {routeOptions()}
+          </select>
+        </label>
+        <span>
+          <Clock3 />
+          {new Date(d.rtc).toISOString().slice(11, 19)}
+        </span>
+      </div>
+      {d.port === "printer" || d.paper ? (
+        <details className="paperBox" open>
+          <summary>
+            <Printer />
+            Printer output
+          </summary>
+          {d.paper ? (
+            d.paper.split("\f").map((page, index) => (
+              <pre key={index} aria-label={"Paper page " + (index + 1)}>
+                {page || " "}
+              </pre>
+            ))
+          ) : (
+            <pre>Paper ready</pre>
+          )}
+        </details>
+      ) : null}
+    </article>
+  );
+}
+function RtcField({ device, number }: { device: Device; number: number }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const value = new Date(device.rtc).toISOString().slice(0, 19);
+  return (
+    <label>
+      RTC (UTC)
+      <input
+        type="datetime-local"
+        step="1"
+        min="1970-01-01T00:00"
+        max="2099-12-31T23:59:59"
+        aria-label={"Terminal " + number + " clock"}
+        value={draft ?? value}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={(e) => {
+          const ms = e.target.valueAsNumber;
+          if (
+            draft !== null &&
+            Number.isFinite(ms) &&
+            ms >= 0 &&
+            ms < Date.UTC(2100, 0)
+          )
+            device.rtc = ms;
+          setDraft(null);
+        }}
+      />
+    </label>
+  );
 }
 function App() {
-  const [generation, setGeneration] = useState(0);
-  const [start] = useState(initial),
-    [sim, replace] = useState(start.sim),
-    [, rerender] = useState(0),
-    [view, viewSet] = useState("operator"),
-    [modal, setModal] = useState(""),
-    [pick, setStation] = useState(0),
-    [error, setError] = useState(start.error),
-    [persist, setPersist] = useState(start.persist),
-    [include, setInclude] = useState(false),
+  const [bench, replace] = useState(createBench),
+    [, redraw] = useState(0),
+    [view, setView] = useState<"bench" | "manual">("bench"),
+    [chapter, setChapter] = useState(0),
+    [card, setCard] = useState(false),
     [sound, setSound] = useState(false),
-    [large, setLarge] = useState(false),
-    [contrast, setContrast] = useState(false),
-    [setup, setSetup] = useState(-1),
-    [scenario, setScenario] = useState(sim.scenario);
-  const audio = useRef<AudioContext | null>(null);
-  const update = () => rerender((x) => x + 1);
-  function replaceSim(n: Simulation) {
-    sim.dispose();
-    setGeneration((x) => x + 1);
-    replace(n);
-    setStation(0);
-    setScenario(n.scenario);
-    setSetup(-1);
-    setModal("");
-    setError("");
-  }
-  function discard() {
-    return (
-      !sim.dirty ||
-      confirm("Replace this session and its messages and printouts?")
-    );
-  }
-  function load(index: number, off = false) {
-    if (!discard()) return;
-    const n = new Simulation(index);
-    if (off)
-      n.stations.forEach((s) => {
-        s.power = false;
-        s.radio = false;
-        s.printer.on = false;
-        s.notice = "POWER OFF";
-      });
-    replaceSim(n);
-  }
-  useEffect(() => {
-    let live = true;
-    const timer = setInterval(async () => {
-      if (document.hidden || sim.paused || !live) return;
-      await sim.advance(100 * sim.speed);
-      if (live) update();
-    }, 100);
-    return () => {
-      live = false;
-      clearInterval(timer);
-    };
-  }, [sim]);
-  useEffect(() => {
-    if (!persist) return;
-    function save() {
-      try {
-        const data = serialize(sim, true);
-        if (data.length > 2e6) throw Error();
-        localStorage.setItem(storageKey, data);
-      } catch {
-        setError("Local save unavailable. Export the session to keep a copy.");
-        setPersist(false);
+    [advanced, setAdvanced] = useState(false);
+  const audio = useRef<AudioContext | null>(null),
+    dialog = useRef<HTMLDialogElement>(null),
+    alarms = useRef([0, 0]);
+  const refresh = () => redraw((x) => x + 1);
+  const [migration] = useState(() => {
+    try {
+      const key = "kipling-field-session-v1";
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+        localStorage.removeItem(key + "-disabled");
+        return true;
       }
+    } catch {
+      /* storage is optional */
     }
-    const t = setInterval(save, 1500);
-    window.addEventListener("pagehide", save);
-    return () => {
-      clearInterval(t);
-      window.removeEventListener("pagehide", save);
-    };
-  }, [sim, persist]);
+    return false;
+  });
+  function tone(hz: number) {
+    if (!audio.current || !sound) return;
+    const ctx = audio.current,
+      o = ctx.createOscillator(),
+      gain = ctx.createGain();
+    o.frequency.value = hz;
+    gain.gain.setValueAtTime(0.025, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    o.connect(gain);
+    gain.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + 0.09);
+  }
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!document.hidden && !bench.paused) bench.step(100 * bench.speed);
+      refresh();
+    }, 100);
+    return () => clearInterval(timer);
+  }, [bench]);
+  useEffect(() => {
+    if (card) dialog.current?.showModal();
+    else dialog.current?.close();
+  }, [card]);
   useEffect(
     () => () => {
       void audio.current?.close();
     },
     [],
   );
-  function chirp(e: React.MouseEvent) {
-    if (!sound || !audio.current || !(e.target as Element).closest(".key"))
-      return;
-    const a = audio.current,
-      o = a.createOscillator(),
-      g = a.createGain();
-    o.frequency.value = 390;
-    g.gain.value = 0.018;
-    o.connect(g);
-    g.connect(a.destination);
-    o.start();
-    o.stop(a.currentTime + 0.035);
+  useEffect(() => {
+    bench.devices.forEach((d, i) => {
+      if (alarms.current[i] !== d.alarms && !d.quiet) tone(190);
+      alarms.current[i] = d.alarms;
+    });
+  });
+  function manual(index: number) {
+    setChapter(index);
+    setView("manual");
+    window.scrollTo(0, 0);
   }
-  async function soundSwitch() {
-    try {
-      if (!audio.current) audio.current = new AudioContext();
-      await audio.current.resume();
-      setSound(!sound);
-    } catch {
-      setError("Audio unavailable");
+  function reset() {
+    if (
+      confirm(
+        "Reset both terminals, messages, keys and paper to the starting training setup?",
+      )
+    ) {
+      replace(createBench());
+      alarms.current = [0, 0];
     }
   }
-  const count = sim.stations.length,
-    clock = utc(sim.time);
   return (
-    <div
-      className={(large ? "large " : "") + (contrast ? "contrast" : "")}
-      onClick={chirp}
-    >
+    <>
       <header>
-        <div className="headinner">
+        <div className="headerFrame">
           <div className="brand">
-            <span className="brandmark">
-              <AudioLines size={24} />
+            <span>
+              <AudioLines />
             </span>
-            KIPLING
-            <span className="brandline" /> <small>Signals Lab</small>
+            Signals Lab
           </div>
-          <nav aria-label="Workspace view">
+          <span className="brandDivider" />
+          <nav aria-label="Primary">
             <button
-              className={view === "operator" ? "active" : ""}
-              onClick={() => viewSet("operator")}
+              aria-current={view === "bench" ? "page" : undefined}
+              onClick={() => setView("bench")}
             >
-              <SquareTerminal />
-              Operator
+              <PanelTop />
+              Workbench
             </button>
             <button
-              className={view === "instructor" ? "active" : ""}
-              onClick={() => viewSet("instructor")}
+              aria-current={view === "manual" ? "page" : undefined}
+              onClick={() => manual(0)}
             >
-              <Settings2 />
-              Instructor
+              <BookOpen />
+              Operating manual
             </button>
           </nav>
-          <button className="guide" onClick={() => setModal("guide")}>
-            <BookOpen size={16} />
-            Operator guide
-          </button>
+          <span className="local">
+            <i />
+            Local simulation
+          </span>
         </div>
       </header>
-      <main>
-        <div className="intro">
-          <div>
-            <div className="eyebrow">
-              <span className="rule" />
-              CLANSMAN DATA SYSTEMS
+      {view === "manual" ? (
+        <Manual key={chapter} initial={chapter} />
+      ) : (
+        <main>
+          <div className="titleBlock">
+            <div>
+              <small className="kicker">
+                <span />
+                CRYPTOGRAPHIC EQUIPMENT
+              </small>
+              <h1>KL-43C workbench</h1>
+              <p>
+                Operate two portable message encryptors across a simulated link.
+              </p>
             </div>
-            <h1>
-              {view === "operator"
-                ? "Terminal workspace"
-                : "Instructor console"}
-            </h1>
-            <p>
-              {view === "operator"
-                ? "Operate connected field terminals on a shared simulated radio net."
-                : "Configure station equipment, inject faults and inspect the simulated net."}
-            </p>
+            <button className="bookButton" onClick={() => manual(0)}>
+              <BookOpen />
+              Quick start
+              <ArrowRight />
+            </button>
           </div>
-          <div className="recon">
-            <span />
-            Behavioural reconstruction
-          </div>
-        </div>
-        <div className="network">
-          <div>
-            <div className="tileicon">
-              <RadioTower />
+          <div className="benchbar">
+            <div className="mediumLabel">
+              <Radio />
+              <strong>Radio link</strong>
             </div>
-            <section>
-              <small>RADIO MEDIUM</small>
-              <strong>
-                {sim.air.length ? "Carrier active" : "Net standing by"}
-              </strong>
-            </section>
-          </div>
-          <div>
-            <div className="tileicon">
-              <Layers2 />
+            <label className="connected">
+              <input
+                aria-label="Link connected"
+                type="checkbox"
+                checked={bench.connected}
+                onChange={(e) => {
+                  bench.setLink(e.target.checked);
+                  refresh();
+                }}
+              />
+              <i />
+              {bench.connected ? "Connected" : "Disconnected"}
+            </label>
+            <label className="conditions">
+              Conditions{" "}
+              <select
+                value={bench.noise}
+                onChange={(e) => {
+                  bench.noise = e.target.value as Noise;
+                  refresh();
+                }}
+              >
+                {impairments.map((n) => (
+                  <option key={n}>{n}</option>
+                ))}
+              </select>
+            </label>
+            <div className="timeControls">
+              <button
+                aria-label={bench.paused ? "Resume clock" : "Pause clock"}
+                onClick={() => {
+                  bench.paused = !bench.paused;
+                  refresh();
+                }}
+              >
+                {bench.paused ? <Play /> : <Pause />}
+              </button>
+              <button
+                aria-label="Step one second"
+                onClick={() => {
+                  bench.paused = true;
+                  bench.step(1000);
+                  refresh();
+                }}
+              >
+                <SkipForward />
+              </button>
+              <select
+                aria-label="Clock speed"
+                value={bench.speed}
+                onChange={(e) => {
+                  bench.speed = +e.target.value;
+                  refresh();
+                }}
+              >
+                {[1, 2, 5, 10, 50].map((n) => (
+                  <option value={n} key={n}>
+                    {n}×
+                  </option>
+                ))}
+              </select>
             </div>
-            <section>
-              <small>STATIONS</small>
-              <strong>
-                {sim.stations.filter((s) => s.power).length} / {count} powered
-              </strong>
-            </section>
           </div>
-          <div>
-            <div className="tileicon">
-              <Clock3 />
+          <div className="rack">
+            {bench.devices.map((d, i) => (
+              <Face
+                key={i}
+                d={d}
+                id={i + 1}
+                port={(p) => bench.port(d, p)}
+                refresh={refresh}
+                press={(unit, k) => {
+                  if (!unit.quiet) tone(440);
+                  unit.press(k);
+                  refresh();
+                }}
+              />
+            ))}
+          </div>
+          <div className="startStrip">
+            <div className="stripIcon">
+              <BookOpen />
             </div>
-            <section>
-              <small>SIMULATION CLOCK</small>
-              <strong>
-                {clock.slice(11, 19)} <em>UTC</em>
-              </strong>
-            </section>
+            <div>
+              {bench.devices.some((d) => d.mode === "off") ? (
+                <>
+                  <h3>Power up a terminal</h3>
+                  <p>
+                    Press <kbd>SRCH</kbd> then <kbd>Y</kbd>. Select key{" "}
+                    <kbd>01</kbd> and press <kbd>ENTER</kbd>.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3>Compose a message</h3>
+                  <p>
+                    At the main menu, press <kbd>W</kbd>, choose buffer{" "}
+                    <kbd>A</kbd> or <kbd>B</kbd>, then <kbd>P</kbd> for
+                    plaintext.
+                  </p>
+                </>
+              )}
+            </div>
+            <button onClick={() => setCard(true)}>
+              <KeyRound />
+              Training key card
+            </button>
           </div>
-          <button onClick={() => setModal("exercise")}>
-            <FlaskConical />
-            Exercises
-            <ChevronRight />
+          <button
+            className="drawer"
+            aria-expanded={advanced}
+            onClick={() => setAdvanced(!advanced)}
+          >
+            <SlidersHorizontal />
+            <b>Bench controls</b>
+            <span>Clocks, equipment & faults</span>
+            <ChevronDown />
           </button>
-        </div>
-        {error && (
-          <div role="alert" className="alert">
-            {error}
-            <button onClick={() => setError("")}>Dismiss</button>
-          </div>
-        )}
-        {sim.scenario > 0 && (
-          <div className="exercise">
-            <b>{scenarios[sim.scenario][0]}</b> {scenarios[sim.scenario][1]}
-          </div>
-        )}
-        {view === "operator" ? (
-          <>
-            <div className={"stationTabs " + (count === 3 ? "three" : "")}>
-              {sim.stations.map((s, i) => (
-                <button
-                  key={s.label}
-                  className={pick === i ? "sel" : ""}
-                  onClick={() => setStation(i)}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-            <div className={"rack " + (count === 3 ? "third" : "")}>
-              {sim.stations.map((s, i) => (
-                <div
-                  className={pick === i ? "selected" : ""}
-                  key={s.label + "-" + sim.scenario}
-                >
-                  <Terminal
-                    key={generation}
-                    sim={sim}
-                    s={s}
-                    num={i + 1}
-                    update={update}
+          {advanced && (
+            <section className="settings">
+              <div className="general">
+                <label>
+                  Impairment seed
+                  <input
+                    type="number"
+                    min={0}
+                    max={4294967295}
+                    value={bench.seed}
+                    onChange={(e) => {
+                      const n = e.target.valueAsNumber;
+                      if (Number.isInteger(n) && n >= 0 && n <= 4294967295)
+                        bench.seed = n;
+                      refresh();
+                    }}
                   />
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="console">
-            <section>
-              <h2>
-                <Clock3 />
-                Simulation control
-              </h2>
-              <p>{clock.replace("T", " ").slice(0, 19)} UTC</p>
-              <div className="actions">
+                </label>
                 <button
                   onClick={() => {
-                    sim.paused = !sim.paused;
-                    update();
+                    bench.devices[1].rtc = bench.devices[0].rtc;
+                    refresh();
                   }}
                 >
-                  {sim.paused ? <Play /> : <Pause />}
-                  {sim.paused ? "Resume" : "Pause"}
+                  Synchronise clocks
                 </button>
                 <button
                   onClick={async () => {
-                    sim.paused = true;
-                    await sim.advance(1000);
-                    update();
+                    if (!sound) {
+                      audio.current ??= new AudioContext();
+                      await audio.current.resume();
+                    }
+                    setSound(!sound);
                   }}
                 >
-                  <SkipForward />
-                  Step 1 s
+                  {sound ? <Volume2 /> : <VolumeX />}Sound{" "}
+                  {sound ? "on" : "off"}
                 </button>
-                <label>
-                  Speed{" "}
-                  <select
-                    value={sim.speed}
-                    onChange={(e) => {
-                      sim.speed = +e.target.value;
-                      update();
-                    }}
-                  >
-                    {[1, 2, 5, 10].map((n) => (
-                      <option key={n} value={n}>
-                        {n}×
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <button onClick={reset}>Reset bench</button>
               </div>
-              <button onClick={() => setModal("exercise")}>
-                Select exercise
-              </button>
-            </section>
-            <section>
-              <h2>
-                <RadioTower />
-                Medium faults
-              </h2>
-              <div className="settings">
-                {(["dropData", "dropAck", "corrupt"] as const).map((k, i) => (
-                  <label className="check" key={k}>
-                    <input
-                      type="checkbox"
-                      checked={sim[k]}
-                      onChange={(e) => {
-                        sim[k] = e.target.checked;
-                        update();
-                      }}
-                    />
-                    {
-                      ["Drop next DATA", "Drop next ACK", "Corrupt next frame"][
-                        i
-                      ]
-                    }
-                  </label>
-                ))}
-              </div>
-              <div className="actions">
-                {["Occupy channel", "Force collision"].map((label, i) => (
-                  <button
-                    key={label}
-                    onClick={() => {
-                      try {
-                        const [a, b] = sim.stations;
-                        for (const s of i ? [a, b] : [b]) {
-                          if (!s.draft) s.draft = "CHANNEL CHECK";
-                          sim.send(s, false, !!i);
-                        }
-                        update();
-                      } catch (e) {
-                        setError((e as Error).message);
-                      }
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h2>
-                <Settings2 />
-                Station configuration
-              </h2>
-              {sim.stations.map((s, i) => (
-                <div className="stationSettings" key={s.label}>
-                  <b>{s.call}</b>
-                  <small>
-                    {s.epoch} · {s.key ? "KEY LOADED" : "NO KEY"}
-                  </small>
-                  <div className="actions">
-                    <button onClick={() => setSetup(i)}>Setup</button>
-                    <button
-                      onClick={() => {
-                        sim.fill(s);
-                        update();
-                      }}
-                    >
-                      Fill RX store
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </section>
-            <section>
-              <h2>
-                <Activity />
-                Event trace
-              </h2>
-              <div className="trace">
-                {sim.trace.map((l, i) => (
-                  <div key={i}>
-                    <time>{utc(l.time).slice(11, 19)}</time> {l.text}
-                  </div>
-                ))}
-              </div>
-            </section>
-            <section>
-              <h2>
-                <Monitor />
-                Display & session
-              </h2>
-              <div className="settings">
-                {["Enlarged LCD text", "High contrast display"].map(
-                  (label, i) => (
-                    <label className="check" key={i}>
+              <div className="faultGrid">
+                {bench.devices.map((d, i) => (
+                  <fieldset key={i}>
+                    <legend>Terminal {i + 1}</legend>
+                    <RtcField device={d} number={i + 1} />
+                    <label>
+                      Drift (ppm)
+                      <input
+                        type="number"
+                        min="-1000"
+                        max="1000"
+                        value={d.drift}
+                        onChange={(e) => {
+                          const n = e.target.valueAsNumber;
+                          if (Number.isFinite(n) && Math.abs(n) <= 1000)
+                            d.drift = n;
+                          refresh();
+                        }}
+                      />
+                    </label>
+                    <label>
                       <input
                         type="checkbox"
-                        checked={i ? contrast : large}
-                        onChange={(e) =>
-                          (i ? setContrast : setLarge)(e.target.checked)
-                        }
+                        checked={d.fault}
+                        onChange={(e) => {
+                          d.fault = e.target.checked;
+                          if (d.fault && d.mode !== "off") d.malfunction();
+                          refresh();
+                        }}
                       />
-                      {label}
+                      Persistent malfunction
                     </label>
-                  ),
-                )}
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={persist}
-                    onChange={(e) => {
-                      const value = e.target.checked;
-                      try {
-                        localStorage.setItem(
-                          storageKey + "-disabled",
-                          value ? "0" : "1",
-                        );
-                        if (!value) localStorage.removeItem(storageKey);
-                        setPersist(value);
-                      } catch {
-                        setError("Storage unavailable");
-                      }
-                    }}
-                  />
-                  Save session locally
-                </label>
-                <button
-                  onClick={() => {
-                    try {
-                      localStorage.removeItem(storageKey);
-                      localStorage.setItem(storageKey + "-disabled", "1");
-                      setPersist(false);
-                    } catch {
-                      setError("Storage unavailable");
-                    }
-                  }}
-                >
-                  Erase saved session
-                </button>
-                <button onClick={() => load(0, true)}>
-                  Start with equipment off
-                </button>
+                    <div className="actions">
+                      <button
+                        onClick={() => {
+                          d.low();
+                          refresh();
+                        }}
+                      >
+                        Low battery
+                      </button>
+                      <button
+                        onClick={() => {
+                          d.replaceBattery();
+                          d.unset = true;
+                          refresh();
+                        }}
+                      >
+                        Reset RTC
+                      </button>
+                      <button
+                        onClick={() => {
+                          d.replaceBattery();
+                          refresh();
+                        }}
+                      >
+                        Replace cells
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (
+                            confirm(
+                              "Erase this terminal’s keys and buffers and enable first activation?",
+                            )
+                          )
+                            d.factoryReset();
+                          refresh();
+                        }}
+                      >
+                        Factory reset
+                      </button>
+                    </div>
+                  </fieldset>
+                ))}
               </div>
+              <details>
+                <summary>
+                  <Activity />
+                  Event log
+                </summary>
+                <pre>{bench.trace.join("\n") || "No transmissions yet."}</pre>
+              </details>
             </section>
-            <section>
-              <h2>
-                <FileIcon />
-                Import & export
-              </h2>
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={include}
-                  onChange={(e) => setInclude(e.target.checked)}
-                />
-                Include messages and printouts
-              </label>
-              <div className="actions">
-                <button
-                  onClick={() =>
-                    download(
-                      "kipling-session.json",
-                      serialize(sim, include),
-                      "application/json",
-                    )
-                  }
-                >
-                  Export session
-                </button>
-              </div>
-              <label>
-                Import session
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={async (e) => {
-                    const f = e.target.files?.[0];
-                    if (!f) return;
-                    try {
-                      if (f.size > 2e6) throw Error();
-                      const n = restore(await f.text());
-                      if (discard()) replaceSim(n);
-                      else n.dispose();
-                    } catch {
-                      setError("Invalid or oversized session file.");
-                    }
-                  }}
-                />
-              </label>
-            </section>
-          </div>
-        )}
-        <footer>
-          <span>
-            <i />
-            LOCAL SIMULATION
-          </span>
-          <div>
-            <button onClick={soundSwitch}>
-              {sound ? <Volume2 /> : <VolumeX />}Sound {sound ? "on" : "off"}
+          )}
+          <div className="manualLinks">
+            <div>
+              <BookOpen />
+              <h3>Operating manuals</h3>
+            </div>
+            <button onClick={() => manual(1)}>
+              Emulator user guide <ArrowRight />
             </button>
-            <button onClick={() => setModal("history")}>
-              <History />
-              History & accuracy
+            <button onClick={() => manual(0)}>
+              Device operator’s guide <ArrowRight />
             </button>
           </div>
-        </footer>
-      </main>
-      {setup >= 0 && (
-        <Setup
-          sim={sim}
-          s={sim.stations[setup]}
-          update={update}
-          close={() => setSetup(-1)}
-        />
-      )}
-      {modal === "exercise" && (
-        <Modal title="Training exercises" close={() => setModal("")}>
-          <label>
-            Exercise
-            <select
-              aria-label="Exercise"
-              value={scenario}
-              onChange={(e) => setScenario(+e.target.value)}
-            >
-              {scenarios.map(([name], i) => (
-                <option key={name} value={i}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p>{scenarios[scenario][1]}</p>
-          <button className="primary" onClick={() => load(scenario)}>
-            Load exercise
-          </button>
-        </Modal>
-      )}
-      {modal === "guide" && (
-        <Modal title="Operator guide" close={() => setModal("")}>
-          <ol>
-            <li>
-              At Station Alpha, press <b>COMPOSE</b>. Type a message. Enter
-              starts a new line.
-            </li>
-            <li>
-              Select BRAVO as the address. Press <b>SEND</b> or Ctrl+Enter.
-              Watch for ACKNOWLEDGED.
-            </li>
-            <li>
-              At Bravo, press <b>READ</b>. The printer feeds automatically. Tear
-              off the slip to archive it.
-            </li>
-          </ol>
-          <p>
-            STORE saves a draft. TX STORE opens it. Use the arrows to browse,
-            ENTER to edit, DELETE to remove a selected record. BACK returns to
-            standby.
-          </p>
-          <p>
-            For a missed ACK, inspect the radio, channel, training key and
-            active date. Repair setup, then choose Retry snapshot. Use printer
-            controls to replace paper or clear a jam.
-          </p>
-          <button
-            className="primary"
-            onClick={() => {
-              setScenario(1);
-              setModal("exercise");
-            }}
-          >
-            First exchange exercise <ChevronRight size={15} />
-          </button>
-        </Modal>
-      )}
-      {modal === "history" && (
-        <Modal title="History & accuracy" close={() => setModal("")}>
-          <p>
-            KIPLING provided security for tactical data transmissions using
-            Clansman. This behavioural reconstruction uses modern substitute
-            cryptography for a local teaching simulation. Both endpoints are
-            visible to the instructor.
-          </p>
-          <p>
-            Source details below come from the supplied research baseline. The
-            linked documents could not be independently verified here.
-          </p>
-          {evidence.claims.map((c) => (
-            <details key={c.id}>
-              <summary>
-                {c.subject} <small>{c.category}</small>
-              </summary>
-              <p>{c.claim}</p>
-              <small>
-                {c.consequence} · {c.source}
-              </small>
-            </details>
-          ))}
-          <details>
-            <summary>Adjustable reconstruction profile</summary>
-            <pre>{JSON.stringify(profile, null, 2)}</pre>
+          {migration && (
+            <p>
+              The earlier KIPLING browser session used a different model. This
+              bench started fresh.
+            </p>
+          )}
+          <details className="accuracy">
+            <summary>
+              Sources & accuracy <ChevronDown />
+            </summary>
+            <p>
+              The interface follows TRW’s KL-43C Operator’s Manual, Revision F
+              (15 August 1991), and the supplied Crypto Museum photographs. The
+              1992 photographed firmware and the British KIPLING designation
+              have separate provenance. The training key format, DES-CFB8
+              provider, radio framing and error correction are simulator
+              designs.{" "}
+              <a href="https://www.cryptomuseum.com/crypto/usa/kl43/">
+                Crypto Museum equipment reference
+              </a>
+              .
+            </p>
           </details>
-          <h3>Sources</h3>
-          {Object.entries(evidence.sources).map(([k, v]) => (
-            <p key={k}>
-              <a href={v.urls[0]} target="_blank" rel="noreferrer">
-                {k} · {v.title}
-              </a>{" "}
-              {v.locator}
+        </main>
+      )}
+      <footer>
+        KL-43C operator reconstruction. Original cipher undocumented; this build
+        uses a DES-based training substitute and simulated radio framing. Not
+        for protecting real information.
+      </footer>
+      <dialog ref={dialog} onCancel={() => setCard(false)}>
+        <div className="dialogHead">
+          <h2>Training key card</h2>
+          <button aria-label="Close card" onClick={() => setCard(false)}>
+            <X />
+          </button>
+        </div>
+        <p>
+          Both terminals start with this material in slot 01, named TRAINING, at
+          update level 00.
+        </p>
+        <div className="keyCard">
+          {training.match(/.{8}/g)?.map((s, i) => (
+            <p key={i}>
+              <small>SET {i + 1}</small>
+              <code>{s}</code>
             </p>
           ))}
-        </Modal>
-      )}
-    </div>
+        </div>
+        <p>
+          For an empty slot, enter a name, press ENTER, then type each set
+          followed by ENTER. Use D CH to correct the current set.
+        </p>
+      </dialog>
+    </>
   );
 }
-const FileIcon = BookOpen;
-createRoot(document.getElementById("root")!).render(
-  globalThis.crypto?.subtle ? (
-    <App />
-  ) : (
-    <p>Web Crypto unavailable. Open the terminal over HTTPS or localhost.</p>
-  ),
-);
+createRoot(document.getElementById("root")!).render(<App />);

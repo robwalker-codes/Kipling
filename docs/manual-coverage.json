@@ -1,0 +1,2617 @@
+{
+  "baseline": "1991-08-15 Revision F, part 410-308-1",
+  "requirements": [
+    {
+      "id": "POWER-01",
+      "behaviour": "SRCH from off opens confirmation; Y starts; timeout powers off; boundary just before/at/after 15 seconds tested.",
+      "source_basis": "5",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5",
+      "pdf_pages": "8",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-01 POWER-02 startup confirmation, deadline and negative answers"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "POWER-02",
+      "behaviour": "Negative/irrelevant input does not bypass confirmation; chosen behaviour and startup ordering tested.",
+      "source_basis": "5; policy where unspecified",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5",
+      "pdf_pages": "8",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-01 POWER-02 startup confirmation, deadline and negative answers"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "POWER-03",
+      "behaviour": "Factory initialisation requires 10 digits then 15 letters; length, correction and completion paths.",
+      "source_basis": "5",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5",
+      "pdf_pages": "8",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "POWER-03 KEY-04 ZERO-01 ZERO-02 FAULT-02 factory key entry and fault recovery"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "POWER-04",
+      "behaviour": "Self-test, unset clock and startup contrast branches are independently reachable.",
+      "source_basis": "5–6",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5–6",
+      "pdf_pages": "8–9",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-02 VIEW-01 POWER-04 BATT-01 RESET RTC, time limits, silent warnings and factory cancellation"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "POWER-05",
+      "behaviour": "O → N preserves all state; O → Y blanks LCD and stops active UI; key reselection required on restart.",
+      "source_basis": "6, 46–47",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "6, 46–47",
+      "pdf_pages": "9, 49–50",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-01 MENU-02 POWER-05 POWER-06 QUIET-01 all menu shortcuts, cycling and restart"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "POWER-06",
+      "behaviour": "Normal off retains specified keys/quiet mode/RTC; buffer retention and battery-loss differences tested against declared policy.",
+      "source_basis": "2–3, 46–47",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "2–3, 46–47",
+      "pdf_pages": "6–7, 49–50",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-01 MENU-02 POWER-05 POWER-06 QUIET-01 all menu shortcuts, cycling and restart"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "MENU-01",
+      "behaviour": "All 13 named shortcuts work even offscreen; list wraps both ways; two-row display only.",
+      "source_basis": "9–10",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "9–10",
+      "pdf_pages": "12–13",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-01 MENU-02 POWER-05 POWER-06 QUIET-01 all menu shortcuts, cycling and restart"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "MENU-02",
+      "behaviour": "All cancel/return paths reach correct preceding/main screen without unintended mutation.",
+      "source_basis": "Throughout Ch. 2",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "9–10",
+      "pdf_pages": "12–13",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-01 MENU-02 POWER-05 POWER-06 QUIET-01 all menu shortcuts, cycling and restart"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-02 Every documented selection prompt rejects unrelated function inputs; screen state remains bounded"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-01",
+      "behaviour": "All 16 slots reachable; four visible at a time; 00/17/incomplete entry rejected appropriately.",
+      "source_basis": "6–9",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "6–9",
+      "pdf_pages": "9–12",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-02",
+      "behaviour": "Name boundaries 0/1/10/11; permitted characters; empty-name policy stated.",
+      "source_basis": "7",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "7",
+      "pdf_pages": "10",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-03",
+      "behaviour": "Four 8-letter groups, ENTER boundaries, D CH correction, incomplete/invalid input.",
+      "source_basis": "7–8; CM observation",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "7–8",
+      "pdf_pages": "10–11",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "KEY-03 KEY-04 KEY-06 KEY-08 reproducible training check and independent effective keys"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-04",
+      "behaviour": "Valid training key accepted; invalid checksum/format rejected; rejected entry cannot leak into active slot.",
+      "source_basis": "7–8; substitute validator",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "7–8",
+      "pdf_pages": "10–11",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "KEY-03 KEY-04 KEY-06 KEY-08 reproducible training check and independent effective keys"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "POWER-03 KEY-04 ZERO-01 ZERO-02 FAULT-02 factory key entry and fault recovery"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-05",
+      "behaviour": "Loaded slot selection and key change update active key without altering messages.",
+      "source_basis": "6–9, 15",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "6–9, 15",
+      "pdf_pages": "9–12, 18",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "POWER-03 POWER-04 KEY-01 KEY-02 KEY-03 KEY-04 KEY-05 first activation, contrast and invalid/corrected key"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-06",
+      "behaviour": "Same material/different slot or name remains compatible; same name/different material does not.",
+      "source_basis": "Key semantics; substitute",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "6–9, 15–17",
+      "pdf_pages": "9–12, 18–20",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "KEY-03 KEY-04 KEY-06 KEY-08 reproducible training check and independent effective keys"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-07",
+      "behaviour": "Update Y/Y changes actual material and count; N at either prompt changes neither.",
+      "source_basis": "16–17",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "16–17",
+      "pdf_pages": "19–20",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "KEY-08",
+      "behaviour": "Independently updated matching keys match; one-sided update fails; counter boundary never silently reuses old material.",
+      "source_basis": "16–17; substitute limits",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "16–17",
+      "pdf_pages": "19–20",
+      "evidence_status": [
+        "documented",
+        "inferred",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/device.ts",
+        "src/kl/provider.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "KEY-03 KEY-04 KEY-06 KEY-08 reproducible training check and independent effective keys"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "CRYPT-04 KEY-08 COM-18 COM-19 manually carry cipher groups, reconcile updates and decrypt"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BUF-01",
+      "behaviour": "A/B independence under composition, review, encryption, reception, printing and clearing.",
+      "source_basis": "1, 10",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1, 10",
+      "pdf_pages": "5, 13",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BUF-02",
+      "behaviour": "Occupied-editor buffer Y clears selected buffer; N preserves permitted content and provenance.",
+      "source_basis": "11",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "11",
+      "pdf_pages": "14",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BUF-03",
+      "behaviour": "Empty-message operations display the correct warning and leave the other buffer intact.",
+      "source_basis": "51–52",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "51–52",
+      "pdf_pages": "52–53",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BUF-04",
+      "behaviour": "2599/2600/2601 input; classification and paragraphs; cipher expansion and all defined storage boundaries.",
+      "source_basis": "1, 67; accounting policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1, 67",
+      "pdf_pages": "5, 65",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-04 EDIT-01 paste, classification and paragraph capacity are atomic at the device boundary"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-01",
+      "behaviour": "Every physical plaintext character, uppercase normalisation, invalid characters and paste policy.",
+      "source_basis": "12–14; photos",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "12–14",
+      "pdf_pages": "15–17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 STATE-03 generated insert/delete sequences agree with an independent reference list (seed 430815)"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-04 EDIT-01 paste, classification and paragraph capacity are atomic at the device boundary"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-02",
+      "behaviour": "Insert at start/middle/end; paragraph versus soft wrap; long word at line edge.",
+      "source_basis": "13",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "13",
+      "pdf_pages": "16",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 STATE-03 generated insert/delete sequences agree with an independent reference list (seed 430815)"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-03",
+      "behaviour": "BOT/EOT and character arrows; cursor stays valid in empty and full buffers.",
+      "source_basis": "13–14",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "13–14",
+      "pdf_pages": "16–17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 STATE-03 generated insert/delete sequences agree with an independent reference list (seed 430815)"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-04",
+      "behaviour": "Up/down and BOL/EOL across wrapped and explicit lines; column policy documented.",
+      "source_basis": "13–14",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "13–14",
+      "pdf_pages": "16–17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 STATE-03 generated insert/delete sequences agree with an independent reference list (seed 430815)"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-05",
+      "behaviour": "D CH deletes left; D WD deletes right; spaces, punctuation, paragraph and end boundaries.",
+      "source_basis": "13–14",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "13–14",
+      "pdf_pages": "16–17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-06",
+      "behaviour": "Search lengths 0/1/20/21; found position; no-match/repeated-search policy.",
+      "source_basis": "14",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "14",
+      "pdf_pages": "17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-07",
+      "behaviour": "XIT stores in selected buffer and shows corresponding notice; no phantom second copy.",
+      "source_basis": "14",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "14",
+      "pdf_pages": "17",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-08",
+      "behaviour": "Cipher input accepts A–Z/2–7 only; rejects 0/1/8/9/punctuation; groups triples without data corruption.",
+      "source_basis": "12",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "12",
+      "pdf_pages": "15",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 EDIT-05 EDIT-06 EDIT-08 BUF-04 editor controls and limits"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "EDIT-09",
+      "behaviour": "Manual cipher editable; encrypted/received cipher editing restricted; cancellation preserves it.",
+      "source_basis": "10, 12",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "10, 12",
+      "pdf_pages": "13, 15",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/editor.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "REVIEW-01",
+      "behaviour": "R A/R B scroll correct content; editing keys cannot mutate; XIT returns correctly.",
+      "source_basis": "21–22",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "21–22",
+      "pdf_pages": "24–25",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "REVIEW-01 read-only review scrolls a single line per arrow and ignores editing/navigation shortcuts"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-01",
+      "behaviour": "E selects correct buffer/key and requires confirmations; every N/cancel branch preserves bytes.",
+      "source_basis": "17–19",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "17–19",
+      "pdf_pages": "20–22",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-02",
+      "behaviour": "Successful E replaces only plaintext buffer with actual ciphertext; no secret plaintext delivery field.",
+      "source_basis": "17–19; substitute",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "17–19",
+      "pdf_pages": "20–22",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-03",
+      "behaviour": "D with matching material restores text/classification/paragraphs; other buffer unchanged.",
+      "source_basis": "19–21",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "19–21",
+      "pdf_pages": "22–24",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-04",
+      "behaviour": "Wrong key/update, malformed data and failed check never report successful plaintext; original cipher preserved.",
+      "source_basis": "51; failure policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "51",
+      "pdf_pages": "52",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "CRYPT-04 KEY-08 COM-18 COM-19 manually carry cipher groups, reconcile updates and decrypt"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-05",
+      "behaviour": "E-on-cipher and D-on-plain warnings; empty buffer warnings.",
+      "source_basis": "51",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "51",
+      "pdf_pages": "52",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-03 CRYPT-01 CRYPT-02 CRYPT-03 CRYPT-04 CRYPT-05 KEY-07 KEY-08 explicit operations, cancellation, change/update"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-06",
+      "behaviour": "Fresh encryptions get distinct IV/ciphertext; retransmission does not re-encrypt.",
+      "source_basis": "1; IV substitute; 25–30",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1",
+      "pdf_pages": "5",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-07",
+      "behaviour": "DES primitive vectors and FIPS 81 CFB8 vector pass both directions; streaming/chunk boundaries match.",
+      "source_basis": "DES / MODE",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "15–21, 51",
+      "pdf_pages": "18–24, 52",
+      "evidence_status": [
+        "documented",
+        "simulator substitute",
+        "unknown"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-07 primitive and external FIPS 81 D2 vectors in both directions"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-08",
+      "behaviour": "Printable encoding fully self-contained; groups/whitespace/final group/length/checksum and malformed cases.",
+      "source_basis": "12, 55; substitute format",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "12, 55",
+      "pdf_pages": "15, 56",
+      "evidence_status": [
+        "documented",
+        "simulator substitute",
+        "unknown"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-09",
+      "behaviour": "Decode/encrypt/decrypt supports defined maximum capacity without silent loss.",
+      "source_basis": "67; capacity policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "67",
+      "pdf_pages": "65",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-10",
+      "behaviour": "Receiver can decrypt serialized cipher in a fresh independent instance with only its key.",
+      "source_basis": "Independence invariant",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "15–21, 51",
+      "pdf_pages": "18–24, 52",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "CRYPT-11",
+      "behaviour": "Changing only date does not break ordinary message decryption or mutate a key.",
+      "source_basis": "No documented date-derived message key",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "15–21, 51",
+      "pdf_pages": "18–24, 52",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "CRYPT-06 CRYPT-08 CRYPT-09 CRYPT-10 CRYPT-11 BUF-04 manual group encoding preserves every envelope byte"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-01",
+      "behaviour": "All six communications branches and remembered-setup path follow documented menu order.",
+      "source_basis": "22–38",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "22–38",
+      "pdf_pages": "25–41",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-02",
+      "behaviour": "Acoustic U/E branch reachable; selection changes declared profile without unverified claims.",
+      "source_basis": "23–24",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "23–24",
+      "pdf_pages": "26–27",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-03",
+      "behaviour": "All ten digital rates selectable; 8N2 framing; mismatched speeds handled.",
+      "source_basis": "27, 36; transport policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "27, 36",
+      "pdf_pages": "30, 39",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-03 COM-06 COM-07 COM-16 digital rates, wrong speed and size-dependent airtime"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-04",
+      "behaviour": "Plaintext TX denied; local cipher TX denied; empty TX denied; correct warnings and unchanged buffers.",
+      "source_basis": "51–53",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "51–53",
+      "pdf_pages": "52–54",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-04 COM-18 COM-19 printable-only transfer works; locally typed cipher cannot transmit"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-05",
+      "behaviour": "Ready → ENTER → transmitting → complete; ENTER retransmits same cipher; XIT exits.",
+      "source_basis": "24–30",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "24–30",
+      "pdf_pages": "27–33",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-06",
+      "behaviour": "TX completion alone cannot mark peer delivery/decryption/print successful.",
+      "source_basis": "24–30",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "24–30",
+      "pdf_pages": "27–33",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-03 COM-06 COM-07 COM-16 digital rates, wrong speed and size-dependent airtime"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-07",
+      "behaviour": "Off/unarmed/disconnected peer receives nothing; late arming and simultaneous transmit have defined outcomes.",
+      "source_basis": "Receive procedure; medium policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "22–38, 51–55, 67",
+      "pdf_pages": "25–41, 52–56, 65",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-03 COM-06 COM-07 COM-16 digital rates, wrong speed and size-dependent airtime"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-07 COM-12 COM-13 COM-17 channel contention, unplug/replug and explicit retransmit"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-08",
+      "behaviour": "Receive chooses available storage per source/policy; both full → N preserves both; Y clears only chosen buffer.",
+      "source_basis": "30–38",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "30–38",
+      "pdf_pages": "33–41",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-08 confirmed replacement of chosen full buffer versus cancellation"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "COM-08 COM-13 terminal with both buffers full can cancel or clear one and recover from carrier loss"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-09",
+      "behaviour": "Audio waits for carrier, digital waits for data; ENTER arms, XIT aborts, active/completed states distinct.",
+      "source_basis": "30–38",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "30–38",
+      "pdf_pages": "33–41",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-10",
+      "behaviour": "Received content remains cipher until D; no automatic print, ACK or deduplication.",
+      "source_basis": "30–38, 45–46",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "30–38, 45–46",
+      "pdf_pages": "33–41, 48–49",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-11",
+      "behaviour": "Clean exchange succeeds through real encode/medium/decode; other buffer byte-for-byte unchanged.",
+      "source_basis": "Ch. 2",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "22–38, 51–55, 67",
+      "pdf_pages": "25–41, 52–56, 65",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-12",
+      "behaviour": "Disconnected link and establishment timeout yield documented failure; no false peer success.",
+      "source_basis": "52",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "52",
+      "pdf_pages": "53",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Clear"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Correctable bit"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Burst error"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Drop frame"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Lose carrier"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-07 COM-12 COM-13 COM-17 channel contention, unplug/replug and explicit retransmit"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "COM-12 COM-14 QUIET-02 recover from noise and retry over connector in silent mode"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-13",
+      "behaviour": "Mid-frame carrier/sync loss produces correct warning, cancellation and receive-buffer outcome.",
+      "source_basis": "53; transaction policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "53",
+      "pdf_pages": "54",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Clear"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Correctable bit"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Burst error"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Drop frame"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Lose carrier"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-07 COM-12 COM-13 COM-17 channel contention, unplug/replug and explicit retransmit"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BATT-02 ZERO-04 COM-13 interruption never resurrects a message or print job"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "COM-08 COM-13 terminal with both buffers full can cancel or clear one and recover from carrier loss"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-14",
+      "behaviour": "Correctable corruption recovers original encoded message; uncorrectable corruption fails visibly.",
+      "source_basis": "53; FEC substitute",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "53",
+      "pdf_pages": "54",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Clear"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Correctable bit"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Burst error"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Drop frame"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Lose carrier"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "COM-12 COM-14 QUIET-02 recover from noise and retry over connector in silent mode"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-15",
+      "behaviour": "Same noise seed/replay produces same events; different seeds do not change unrelated key/clock state.",
+      "source_basis": "Simulator invariant",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "22–38, 51–55, 67",
+      "pdf_pages": "25–41, 52–56, 65",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Clear"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Correctable bit"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Burst error"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Drop frame"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-12 COM-13 COM-14 COM-15 impair and recover Lose carrier"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-16",
+      "behaviour": "Size/rate affect duration; accelerated time changes duration, not event ordering or content.",
+      "source_basis": "27, 36, 67; overhead policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "27, 36, 67",
+      "pdf_pages": "30, 39, 65",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-03 COM-06 COM-07 COM-16 digital rates, wrong speed and size-dependent airtime"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-17",
+      "behaviour": "Manual retransmission works after failure; repeats are not silently discarded by an invented deduplicator.",
+      "source_basis": "25, 28, 30",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "25, 28, 30",
+      "pdf_pages": "28, 31, 33",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange acoustic"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange connector"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-01 COM-02 COM-05 COM-09 COM-10 COM-11 COM-17 Appendix E exchange digital"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-07 COM-12 COM-13 COM-17 channel contention, unplug/replug and explicit retransmit"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-18",
+      "behaviour": "Ciphertext read/print → manual entry on other device → decrypt works without hidden metadata.",
+      "source_basis": "55",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "55",
+      "pdf_pages": "56",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-04 COM-18 COM-19 printable-only transfer works; locally typed cipher cannot transmit"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "CRYPT-04 KEY-08 COM-18 COM-19 manually carry cipher groups, reconcile updates and decrypt"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "COM-19",
+      "behaviour": "That manually entered cipher cannot TX; decrypt/re-encrypt makes it eligible.",
+      "source_basis": "12, 52",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "12, 52",
+      "pdf_pages": "15, 53",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "COM-04 COM-18 COM-19 printable-only transfer works; locally typed cipher cannot transmit"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "CRYPT-04 KEY-08 COM-18 COM-19 manually carry cipher groups, reconcile updates and decrypt"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "QUIET-01",
+      "behaviour": "Q S/Q N/current marker/XIT; setting persists over off/on.",
+      "source_basis": "39–40",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "39–40",
+      "pdf_pages": "42–43",
+      "evidence_status": [
+        "documented"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "MENU-01 MENU-02 POWER-05 POWER-06 QUIET-01 all menu shortcuts, cycling and restart"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "QUIET-01 QUIET-02 switch back to normal acoustic mode, including the European line profile"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "QUIET-02",
+      "behaviour": "Silent suppresses clicks/alarms and blocks acoustic communication while connector/digital remain usable.",
+      "source_basis": "39–40, 53–54",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "39–40, 53–54",
+      "pdf_pages": "42–43, 54–55",
+      "evidence_status": [
+        "documented"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "COM-12 COM-14 QUIET-02 recover from noise and retry over connector in silent mode"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "QUIET-01 QUIET-02 switch back to normal acoustic mode, including the European line profile"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "QUIET-03",
+      "behaviour": "External speaker mute does not enable/disable a device transmission path.",
+      "source_basis": "UI separation",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "39–40, 53–54",
+      "pdf_pages": "42–43, 54–55",
+      "evidence_status": [
+        "documented"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-01",
+      "behaviour": "A key confirmation/change/update paths; C and R screens; XIT cancellation.",
+      "source_basis": "40–42",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40–42",
+      "pdf_pages": "43–45",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-01 AUTH-02 manual challenge and reply through two independent keyboards"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "AUTH-01 AUTH-08 verbal challenge and reply using only visible characters"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-02",
+      "behaviour": "Four-character challenge/reply; reply entry/correction/ENTER/length/character validation.",
+      "source_basis": "41–42; alphabet policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "41–42",
+      "pdf_pages": "44–45",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-01 AUTH-02 manual challenge and reply through two independent keyboards"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-03",
+      "behaviour": "Matching keys and aligned clocks produce matching replies using independent devices.",
+      "source_basis": "40; substitute",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40",
+      "pdf_pages": "43",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-04",
+      "behaviour": "Wrong keys/update levels produce mismatch for fixed fixtures; no peer key/name lookup.",
+      "source_basis": "40; substitute",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40",
+      "pdf_pages": "43",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-05",
+      "behaviour": "Test 19m59s, 20m and 20m01s positive/negative offsets under explicitly stated resolution/boundary policy.",
+      "source_basis": "40; boundary unspecified",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40",
+      "pdf_pages": "43",
+      "evidence_status": [
+        "documented",
+        "simulator substitute",
+        "unknown"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "AUTH-05 TIME-04 different-day message decryption and clock repair for the spoken reply"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-06",
+      "behaviour": "Near time-bucket edges, midnight/month/year/leap-day boundaries; devices seconds apart must not fail solely at a bucket boundary.",
+      "source_basis": "40, 44–45; reconstruction",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40, 44–45",
+      "pdf_pages": "43, 47–48",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-07",
+      "behaviour": "Different date/drift, stale challenge and time-encoding rollover policies tested without changing message crypto.",
+      "source_basis": "Reconstruction",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40–42",
+      "pdf_pages": "43–45",
+      "evidence_status": [
+        "documented",
+        "simulator substitute",
+        "unknown"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "AUTH-08",
+      "behaviour": "Only manually exchanged challenge characters reach reply provider; no hidden timestamp oracle.",
+      "source_basis": "Operator exchange; architecture",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "40–42",
+      "pdf_pages": "43–45",
+      "evidence_status": [
+        "documented",
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/provider.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "AUTH-02 AUTH-03 AUTH-04 AUTH-05 AUTH-06 AUTH-07 AUTH-08 second-resolution window crosses midnight and counter rollover"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "AUTH-01 AUTH-08 verbal challenge and reply using only visible characters"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "TIME-01",
+      "behaviour": "S field navigation/increment/decrement; seconds unavailable; XIT commits and starts seconds.",
+      "source_basis": "44–45",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "44–45",
+      "pdf_pages": "47–48",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-01 TIME-02 TIME-03 TIME-04 VIEW-01 independent RTC, date editing, contrast and clock overlay"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "TIME-02",
+      "behaviour": "Invalid dates, leap years and supported year range; host timezone/DST cannot alter simulation.",
+      "source_basis": "Calendar policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "44–45",
+      "pdf_pages": "47–48",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-01 TIME-02 TIME-03 TIME-04 VIEW-01 independent RTC, date editing, contrast and clock overlay"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-02 VIEW-01 POWER-04 BATT-01 RESET RTC, time limits, silent warnings and factory cancellation"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "TIME-03",
+      "behaviour": "CLK view restores prior menu/editor; inhibited during each documented active operation.",
+      "source_basis": "45",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "45",
+      "pdf_pages": "48",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-01 TIME-02 TIME-03 TIME-04 VIEW-01 independent RTC, date editing, contrast and clock overlay"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "TIME-04",
+      "behaviour": "Independent RTCs, offsets, pause/resume/drift, off-state ticking and external sync do not mutate message/key state.",
+      "source_basis": "2, 47; bench policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "2, 47",
+      "pdf_pages": "6, 50",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-01 TIME-02 TIME-03 TIME-04 VIEW-01 independent RTC, date editing, contrast and clock overlay"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "AUTH-05 TIME-04 different-day message decryption and clock repair for the spoken reply"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "ZERO-01",
+      "behaviour": "Single-slot N preserves all; Y clears only chosen slot; active key invalidated if needed.",
+      "source_basis": "43",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "43",
+      "pdf_pages": "46",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "POWER-03 KEY-04 ZERO-01 ZERO-02 FAULT-02 factory key entry and fault recovery"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "ZERO-02",
+      "behaviour": "ALL then N preserves; ALL then Y clears 16 slots and both buffers.",
+      "source_basis": "43–44",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "43–44",
+      "pdf_pages": "46–47",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "POWER-03 KEY-04 ZERO-01 ZERO-02 FAULT-02 factory key entry and fault recovery"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BATT-01 ZERO-02 STATE-02 battery deadline, sound-independent power and fresh session after all-zeroise"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "ZERO-03",
+      "behaviour": "ZRO availability during startup and operation precedence match documented decision.",
+      "source_basis": "43; Appendix E",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "43",
+      "pdf_pages": "46",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "ZERO-04",
+      "behaviour": "No pending crypto/receive/print callback restores cleared content or resumes old traffic.",
+      "source_basis": "Race invariant",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "42–44",
+      "pdf_pages": "45–47",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BATT-02 ZERO-04 COM-13 interruption never resurrects a message or print job"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "PRINT-01",
+      "behaviour": "P A/B option menu; correct buffer/plaintext/ciphertext; empty-buffer response.",
+      "source_basis": "45–46, 51–52",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "45–46, 51–52",
+      "pdf_pages": "48–49, 52–53",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "PRINT-02",
+      "behaviour": "Plaintext requires Y; other input cannot release it; XIT aborts without output.",
+      "source_basis": "46; Appendix B discrepancy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "46",
+      "pdf_pages": "49",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "PRINT-03",
+      "behaviour": "Cipher print, incremental spool, L line feed, F form feed, XIT stop and menu return.",
+      "source_basis": "45–46",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "45–46",
+      "pdf_pages": "48–49",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "PRINT-04",
+      "behaviour": "Disconnected/wrong peripheral cannot behave as an attached printer; route conflicts tested.",
+      "source_basis": "46, 49; logical adapter",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "46, 49",
+      "pdf_pages": "49, 51",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "QUIET-02 QUIET-03 PRINT-01 PRINT-02 PRINT-03 PRINT-04 zeroise cancels printing"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "VIEW-01",
+      "behaviour": "V contrast bounds/up/down/XIT; startup recovery and key-menu shortcut coexist with scrolling by stated policy.",
+      "source_basis": "44",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "44",
+      "pdf_pages": "47",
+      "evidence_status": [
+        "documented"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BUF-01 BUF-02 EDIT-07 EDIT-09 REVIEW-01 content retention, read-only review and replacement"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-01 TIME-02 TIME-03 TIME-04 VIEW-01 independent RTC, date editing, contrast and clock overlay"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-02 VIEW-01 POWER-04 BATT-01 RESET RTC, time limits, silent warnings and factory cancellation"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "REVIEW-01 read-only review scrolls a single line per arrow and ignores editing/navigation shortcuts"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BATT-01",
+      "behaviour": "Low battery warning; approximate four-minute model; shutdown boundary; normal versus silent sound.",
+      "source_basis": "3, 54",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "3, 54",
+      "pdf_pages": "7, 55",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "TIME-02 VIEW-01 POWER-04 BATT-01 RESET RTC, time limits, silent warnings and factory cancellation"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BATT-01 ZERO-02 STATE-02 battery deadline, sound-independent power and fresh session after all-zeroise"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BATT-02",
+      "behaviour": "Power failure while editing/encrypting/receiving/printing preserves/aborts according to stated policy; no stale effects.",
+      "source_basis": "3, 47; fault policy",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "3, 47",
+      "pdf_pages": "7, 50",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "BATT-02 ZERO-04 COM-13 interruption never resurrects a message or print job"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "FAULT-01",
+      "behaviour": "MALFUNCTION immediately clears all keys; selected key unusable; no stale key survives.",
+      "source_basis": "54",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "54",
+      "pdf_pages": "55",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "FAULT-02",
+      "behaviour": "Battery reset and held-XIT reset; persistent fault repeats; hold threshold explicit; buffer behaviour not conflated with ZRO ALL.",
+      "source_basis": "54, 57",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "54, 57",
+      "pdf_pages": "55, 57",
+      "evidence_status": [
+        "documented",
+        "inferred"
+      ],
+      "implementation": [
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "ZERO-01 ZERO-02 ZERO-03 ZERO-04 BATT-01 BATT-02 FAULT-01 FAULT-02 lifecycle boundaries"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "POWER-03 KEY-04 ZERO-01 ZERO-02 FAULT-02 factory key entry and fault recovery"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "UI-01",
+      "behaviour": "Exactly 59 keys, proper labels/rows, one tall ENTER, small SPC, no invented control row.",
+      "source_basis": "Photos; 67",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5–47, 67",
+      "pdf_pages": "8–50, 65",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/main.tsx",
+        "src/style.css",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "UI-02",
+      "behaviour": "LCD always two rows of 40 cells; verified fixtures for startup, menus, editor, crypto, comms, auth and warnings.",
+      "source_basis": "Throughout Ch. 2; 67",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5–47, 67",
+      "pdf_pages": "8–50, 65",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/main.tsx",
+        "src/style.css",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "UI-02 DOC-01 manually transcribed LCD states and inhibited keys"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "UI-03",
+      "behaviour": "Native keyboard and click/touch produce identical events; focus isolates terminals and external inputs.",
+      "source_basis": "Browser adaptation",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5–47, 67",
+      "pdf_pages": "8–50, 65",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/main.tsx",
+        "src/style.css",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "UI-04",
+      "behaviour": "Desktop side-by-side, mobile usable, zoom/reduced-motion/accessibility; no clipped keys or hidden LCD content.",
+      "source_basis": "Product requirements",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "5–47, 67",
+      "pdf_pages": "8–50, 65",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/main.tsx",
+        "src/style.css",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "UI-04 DOC-01 screenshot desktop and phone, find and print both guides"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "STATE-01",
+      "behaviour": "Independent buffers, keys, clocks, faults and printers; no mutable cross-terminal aliases.",
+      "source_basis": "Architecture invariant",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1–3, 46–47",
+      "pdf_pages": "5–7, 49–50",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "STATE-01 STATE-02 STATE-03 seeded keyboard stress maintains bounds and independent state"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "STATE-02",
+      "behaviour": "Versioned persistence/migration if present; malformed imports rejected; zeroise/reset cannot resurrect data on reload.",
+      "source_basis": "Browser adaptation",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1–3, 46–47",
+      "pdf_pages": "5–7, 49–50",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "STATE-01 STATE-02 STATE-03 seeded keyboard stress maintains bounds and independent state"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BATT-01 ZERO-02 STATE-02 battery deadline, sound-independent power and fresh session after all-zeroise"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "STATE-03",
+      "behaviour": "Generated event sequences preserve invariants; all Y/N/XIT branches; operation cancellation and replay deterministic.",
+      "source_basis": "Architecture invariant",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1–3, 46–47",
+      "pdf_pages": "5–7, 49–50",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "src/kl/bench.ts",
+        "src/kl/device.ts"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "STATE-01 STATE-02 STATE-03 seeded keyboard stress maintains bounds and independent state"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "EDIT-01 EDIT-02 EDIT-03 EDIT-04 STATE-03 generated insert/delete sequences agree with an independent reference list (seed 430815)"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "BUILD-01",
+      "behaviour": "Fresh install/typecheck/tests/build work with lockfile; required types and dev dependencies declared.",
+      "source_basis": "Existing project reliability",
+      "source": "Static deployment brief",
+      "printed_pages": "",
+      "pdf_pages": "",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "package.json",
+        "package-lock.json",
+        "vite.config.ts",
+        "scripts/test-server.mjs"
+      ],
+      "checks": [
+        {
+          "command": "npm ci"
+        },
+        {
+          "command": "npm run typecheck"
+        },
+        {
+          "command": "npm run lint"
+        },
+        {
+          "command": "npm test"
+        },
+        {
+          "command": "npm run coverage"
+        },
+        {
+          "command": "npm run build"
+        }
+      ],
+      "verification_status": "Clean install and build verified on Linux / Node 24"
+    },
+    {
+      "id": "BUILD-02",
+      "behaviour": "Built app works from root and nested static path with no server API/CDN; assets resolve; no runtime network dependency.",
+      "source_basis": "Deployment requirement",
+      "source": "Static deployment brief",
+      "printed_pages": "",
+      "pdf_pages": "",
+      "evidence_status": [
+        "simulator substitute"
+      ],
+      "implementation": [
+        "package.json",
+        "package-lock.json",
+        "vite.config.ts",
+        "scripts/test-server.mjs"
+      ],
+      "checks": [
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 UI-01 UI-02 UI-03 COM-11 PRINT-02 physical exchange and print under a static subdirectory"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "BUILD-02 packaged standalone HTML performs the exchange with all asset requests blocked"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "DOC-01",
+      "behaviour": "Every manual section, warning and Appendix E recipe maps to implementation/test or an explicit justified disposition.",
+      "source_basis": "Complete manual",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "1–70",
+      "pdf_pages": "5–68",
+      "evidence_status": [
+        "documented"
+      ],
+      "implementation": [
+        "docs/KL43C_SPEC.md",
+        "docs/DEVICE_MANUAL.md",
+        "docs/EMULATOR_MANUAL.md"
+      ],
+      "checks": [
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "UI-02 DOC-01 manually transcribed LCD states and inhibited keys"
+        },
+        {
+          "file": "src/kl/device.test.ts",
+          "test": "DOC-01 Appendix B warning transcriptions reflect the photographed scan"
+        },
+        {
+          "file": "tests/operator.spec.ts",
+          "test": "UI-04 DOC-01 screenshot desktop and phone, find and print both guides"
+        }
+      ],
+      "verification_status": "Exercised in the referenced checks"
+    },
+    {
+      "id": "DOC-02",
+      "behaviour": "Physical specifications/environmental tests recorded as hardware facts, not falsely “passed” browser tests.",
+      "source_basis": "67–70",
+      "source": "Supplied TRW Revision F / photographs and simulator decisions",
+      "printed_pages": "67–70",
+      "pdf_pages": "65–68",
+      "evidence_status": [
+        "physical/non-software"
+      ],
+      "implementation": [
+        "docs/KL43C_SPEC.md",
+        "docs/DEVICE_MANUAL.md",
+        "docs/EMULATOR_MANUAL.md"
+      ],
+      "checks": [
+        {
+          "inspection": "Manual PDF pp. 65–68 and docs/KL43C_SPEC.md"
+        }
+      ],
+      "verification_status": "Documentary comparison only; physical qualification outside browser scope"
+    }
+  ]
+}
